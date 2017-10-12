@@ -715,5 +715,21 @@ namespace Dota2.GC
                 result = msg;
             }
         }
+        
+        /// <summary>
+        ///     Response to a SpectateFriendGame call
+        /// </summary>
+        public sealed class SpectateFriendGameResponse : CallbackMsg
+        {
+            /// <summary>
+            /// Spectating game info (steam_server_id) 
+            /// </summary>
+            public CMsgSpectateFriendGameResponse result;
+
+            internal SpectateFriendGameResponse(CMsgSpectateFriendGameResponse msg)
+            {
+                result = msg;
+            }
+        }
     }
 }
