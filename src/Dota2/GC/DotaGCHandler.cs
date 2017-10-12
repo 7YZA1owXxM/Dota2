@@ -791,6 +791,17 @@ namespace Dota2.GC
             request.Body.account_id = account_id;
             Send(request);
         }
+        
+        /// <summary>
+        ///     Spectate friend's game
+        /// </summary>
+        /// <param name="steamId">Steam ID of friend to spectate</param>
+        public void SpectateFriendGame(ulong steamId)
+        {
+            var spectate = new ClientGCMsgProtobuf<CMsgSpectateFriendGame>((uint)EDOTAGCMsg.k_EMsgGCSpectateFriendGame);
+            spectate.Body.steam_id = steamId;
+            Send(spectate);
+        }
 
         /// <summary>
         ///     Packet GC message.
@@ -850,7 +861,8 @@ namespace Dota2.GC
                         {(uint) EDOTAGCMsg.k_EMsgGCGuildInviteAccountResponse, HandleGuildInviteAccountResponse},
                         {(uint) EDOTAGCMsg.k_EMsgGCGuildCancelInviteResponse, HandleGuildCancelInviteResponse},
                         {(uint) EDOTAGCMsg.k_EMsgGCGuildData, HandleGuildData},
-                        {(uint) EDOTAGCMsg.k_EMsgClientToGCGetProfileCardResponse, HandleProfileCardResponse}
+                        {(uint) EDOTAGCMsg.k_EMsgClientToGCGetProfileCardResponse, HandleProfileCardResponse},
+                        {(uint) EDOTAGCMsg.k_EMsgGCSpectateFriendGameResponse, HandleSpectateFriendGameResponse}
                     };
                     Action<IPacketGCMsg> func;
                     if (!messageMap.TryGetValue(gcmsg.MsgType, out func))
@@ -1292,6 +1304,12 @@ namespace Dota2.GC
         {
             var resp = new ClientGCMsgProtobuf<CMsgDOTAProfileCard>(obj);
             Client.PostCallback(new ProfileCardResponse(resp.Body));
+        }
+        
+        private void HandleSpectateFriendGameResponse(IPacketGCMsg obj)
+        {
+            var resp = new ClientGCMsgProtobuf<CMsgSpectateFriendGameResponse>(obj);
+            Client.PostCallback(new SpectateFriendGameResponse(resp.Body));
         }
     }
 }
